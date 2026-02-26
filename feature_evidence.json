@@ -1,0 +1,52 @@
+{
+  "kind": "feature_evidence_report",
+  "features": [
+    {
+      "featureId": "feature-ensure-the-admin-panel-login-at-admin-works-correctly-with-credentials-nuralom1-9040-the-admin-login-form-must-authenticate-successfully-with-these-credentials-store-an-admin-session-token-in-localstorage-and-redirect-to-the-admin-dashboard-all-admin-dashboard-tabs-dashboard-stats-transaction-control-user-management-transaction-management-notifications-support-tickets-must-be-accessible-after-login",
+      "featureTitle": "Ensure the Admin Panel login at `/admin` works correctly with credentials `nuralom1` / `9040`. The admin login form must authenticate successfully with these credentials, store an admin session token in localStorage, and redirect to the admin dashboard. All admin dashboard tabs (Dashboard stats, Transaction Control, User Management, Transaction Management, Notifications, Support Tickets) must be accessible after login.",
+      "files": [
+        "frontend/src/App.tsx",
+        "frontend/src/pages/admin/AdminDashboardPage.tsx",
+        "frontend/src/pages/admin/AdminLoginPage.tsx",
+        "frontend/src/utils/adminAuth.ts"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-16"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-after-fixing-the-registeruser-bug-verify-that-the-full-user-authentication-flow-works-end-to-end-1-a-new-user-can-register-with-mobile-number-full-name-and-pin-2-the-same-user-can-then-log-in-with-their-mobile-number-and-pin-3-device-fingerprint-is-stored-on-first-login-4-subsequent-logins-from-the-same-device-succeed-without-device-mismatch-errors",
+      "featureTitle": "After fixing the registerUser bug, verify that the full user authentication flow works end-to-end: (1) A new user can register with mobile number, full name, and PIN; (2) The same user can then log in with their mobile number and PIN; (3) Device fingerprint is stored on first login; (4) Subsequent logins from the same device succeed without device mismatch errors.",
+      "files": [
+        "frontend/src/hooks/useQueries.ts",
+        "frontend/src/pages/HomePage.tsx",
+        "frontend/src/pages/LoginPage.tsx",
+        "frontend/src/store/authStore.ts",
+        "frontend/src/utils/deviceFingerprint.ts"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-17"
+      ],
+      "confidence": "high"
+    }
+  ]
+}

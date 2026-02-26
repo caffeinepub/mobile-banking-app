@@ -1,0 +1,78 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "Fix registerUser bug and ensure admin panel login works",
+  "requirements": [
+    {
+      "id": "REQ-16",
+      "summary": "Ensure admin panel login at /admin works with credentials nuralom1/9040 and grants access to all dashboard tabs",
+      "acceptanceCriteria": [
+        "Navigating to /admin shows the admin login form",
+        "Entering username 'nuralom1' and password '9040' and submitting redirects to the admin dashboard",
+        "Incorrect credentials show an error message and do not grant access",
+        "Admin session token is persisted in localStorage so the dashboard remains accessible on page reload",
+        "All six admin dashboard sections are reachable after successful login"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/admin/AdminLoginPage.tsx",
+          "operation": "modify",
+          "description": "Review the hardcoded admin credential validation logic to ensure username 'nuralom1' and password '9040' are correctly checked. Verify that on successful validation, an admin token is stored in localStorage and the user is redirected to /admin/dashboard. Ensure incorrect credentials display an error message without granting access."
+        },
+        {
+          "path": "frontend/src/utils/adminAuth.ts",
+          "operation": "modify",
+          "description": "Verify the validateAdminCredentials function correctly compares username against 'nuralom1' and password against '9040'. Confirm the admin token management functions (getAdminToken, setAdminToken, clearAdminToken) properly persist and retrieve the token from localStorage."
+        },
+        {
+          "path": "frontend/src/pages/admin/AdminDashboardPage.tsx",
+          "operation": "modify",
+          "description": "Ensure the dashboard page checks for a valid admin token on mount and redirects to /admin if missing. Verify all six tabs (Dashboard stats, Transaction Control, User Management, Transaction Management, Notifications, Support Tickets) are rendered and accessible after successful login."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Verify the /admin and /admin/dashboard routes are correctly registered in the router configuration so navigation between the login page and dashboard works as expected."
+        }
+      ]
+    },
+    {
+      "id": "REQ-17",
+      "summary": "Verify the full user authentication flow works end-to-end after the registerUser fix: registration, login, device fingerprint storage, and device mismatch handling",
+      "acceptanceCriteria": [
+        "Registration completes without errors and returns a user ID",
+        "Login with correct mobile + PIN returns user data and stores device fingerprint",
+        "Subsequent login from the same device (same fingerprint) succeeds",
+        "Login from a different device fingerprint shows the device mismatch error with support number +8809606945622",
+        "After login, the user is redirected to the Home page"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/LoginPage.tsx",
+          "operation": "modify",
+          "description": "Review the registration tab form submission flow to ensure it calls the registerUser mutation with mobile, pin, name, and deviceId. Verify that on success, the user is informed of successful registration. Review the login tab form submission to confirm it calls loginUser with mobile, pin, and deviceId, and on success stores the returned userId and balance in authStore and redirects to /home. Ensure device mismatch errors display the support number +8809606945622."
+        },
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Verify the useRegisterUser mutation correctly calls actor.registerUser(mobile, pin, name, deviceId) and handles success/error responses. Confirm the useLoginUser mutation calls actor.loginUser(mobile, pin, deviceId), parses the returned user data, and stores userId and balance. Ensure device mismatch errors are properly surfaced to the UI."
+        },
+        {
+          "path": "frontend/src/store/authStore.ts",
+          "operation": "modify",
+          "description": "Confirm the authStore correctly persists userId, balance, and KYC status to localStorage so the session survives page reloads. Verify the login action updates these fields and the logout action clears them."
+        },
+        {
+          "path": "frontend/src/utils/deviceFingerprint.ts",
+          "operation": "modify",
+          "description": "Verify the getDeviceFingerprint function generates a stable fingerprint ID from browser properties (user agent, screen, timezone, language) and persists it in localStorage. Confirm it returns the same fingerprint on subsequent calls from the same device."
+        },
+        {
+          "path": "frontend/src/pages/HomePage.tsx",
+          "operation": "modify",
+          "description": "Ensure the HomePage redirects unauthenticated users (no userId in authStore) to /login. Verify that after successful login, the user can access the balance card, announcement marquee, and service grid."
+        }
+      ]
+    }
+  ]
+}

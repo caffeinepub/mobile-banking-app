@@ -1,0 +1,182 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --radius: 0.75rem;
+
+    /* NuroPay Green Theme */
+    --background: 0.99 0 0;
+    --foreground: 0.15 0.01 250;
+    --card: 1 0 0;
+    --card-foreground: 0.15 0.01 250;
+    --popover: 1 0 0;
+    --popover-foreground: 0.15 0.01 250;
+
+    /* Primary: #22C55E green */
+    --primary: 0.723 0.191 149.58;
+    --primary-foreground: 1 0 0;
+
+    --secondary: 0.96 0.005 150;
+    --secondary-foreground: 0.2 0.01 150;
+
+    --muted: 0.96 0.003 0;
+    --muted-foreground: 0.5 0.01 250;
+
+    --accent: 0.94 0.02 149;
+    --accent-foreground: 0.2 0.05 149;
+
+    --destructive: 0.577 0.245 27.325;
+    --destructive-foreground: 1 0 0;
+
+    --border: 0.91 0.005 0;
+    --input: 0.91 0.005 0;
+    --ring: 0.723 0.191 149.58;
+
+    --chart-1: 0.723 0.191 149.58;
+    --chart-2: 0.6 0.118 184.704;
+    --chart-3: 0.398 0.07 227.392;
+    --chart-4: 0.828 0.189 84.429;
+    --chart-5: 0.769 0.188 70.08;
+
+    --sidebar: 0.985 0 0;
+    --sidebar-foreground: 0.145 0 0;
+    --sidebar-primary: 0.723 0.191 149.58;
+    --sidebar-primary-foreground: 1 0 0;
+    --sidebar-accent: 0.97 0 0;
+    --sidebar-accent-foreground: 0.205 0 0;
+    --sidebar-border: 0.922 0 0;
+    --sidebar-ring: 0.708 0 0;
+
+    /* Status colors */
+    --status-processing: 0.82 0.18 85;
+    --status-completed: 0.723 0.191 149.58;
+    --status-cancelled: 0.577 0.245 27.325;
+  }
+
+  .dark {
+    --background: 0.12 0.005 250;
+    --foreground: 0.97 0 0;
+    --card: 0.16 0.005 250;
+    --card-foreground: 0.97 0 0;
+    --popover: 0.18 0.005 250;
+    --popover-foreground: 0.97 0 0;
+    --primary: 0.723 0.191 149.58;
+    --primary-foreground: 1 0 0;
+    --secondary: 0.22 0.01 250;
+    --secondary-foreground: 0.97 0 0;
+    --muted: 0.22 0.01 250;
+    --muted-foreground: 0.65 0.01 250;
+    --accent: 0.25 0.02 149;
+    --accent-foreground: 0.97 0 0;
+    --destructive: 0.704 0.191 22.216;
+    --destructive-foreground: 0.97 0 0;
+    --border: 1 0 0 / 10%;
+    --input: 1 0 0 / 15%;
+    --ring: 0.723 0.191 149.58;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3 {
+    font-family: 'Poppins', sans-serif;
+  }
+}
+
+@layer utilities {
+  .app-container {
+    @apply max-w-[430px] mx-auto min-h-screen bg-background relative;
+  }
+
+  .page-content {
+    @apply pb-20 pt-0;
+  }
+
+  .card-shadow {
+    box-shadow: 0 2px 12px 0 rgba(34, 197, 94, 0.08), 0 1px 3px 0 rgba(0,0,0,0.06);
+  }
+
+  .card-shadow-md {
+    box-shadow: 0 4px 20px 0 rgba(34, 197, 94, 0.12), 0 2px 6px 0 rgba(0,0,0,0.08);
+  }
+
+  .green-gradient {
+    background: linear-gradient(135deg, oklch(0.723 0.191 149.58) 0%, oklch(0.65 0.18 160) 100%);
+  }
+
+  .green-gradient-light {
+    background: linear-gradient(135deg, oklch(0.96 0.04 149) 0%, oklch(0.93 0.06 155) 100%);
+  }
+
+  .status-processing {
+    @apply bg-yellow-100 text-yellow-700;
+  }
+
+  .status-completed {
+    @apply bg-green-100 text-green-700;
+  }
+
+  .status-cancelled {
+    @apply bg-red-100 text-red-700;
+  }
+
+  .pin-input {
+    @apply w-12 h-12 text-center text-xl font-bold border-2 rounded-xl focus:border-primary focus:outline-none transition-colors;
+  }
+
+  @keyframes marquee {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
+  }
+
+  .marquee-text {
+    animation: marquee 20s linear infinite;
+    white-space: nowrap;
+  }
+
+  @keyframes spin-slow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .spin-slow {
+    animation: spin-slow 1.5s linear infinite;
+  }
+
+  @keyframes pulse-green {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+  }
+
+  .pulse-green {
+    animation: pulse-green 2s ease-in-out infinite;
+  }
+
+  .bottom-nav-safe {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  .print-only {
+    display: block !important;
+  }
+  body {
+    background: white;
+  }
+}

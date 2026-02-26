@@ -1,0 +1,255 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 5,
+  "summary": "Mobile banking app (similar to bKash/Nagad) with Bangladeshi mobile number + 4-digit PIN login, device binding/identification, biometric option, home page with balance (BDT) and service icons, Send Money/Recharge/Add Money/Pay Bill/Cash Out (bKash/Nagad/Rocket/Upay)/Bank Transfer/Savings with processing status and transaction slips, KYC system (NID/name/address/photo - mandatory before transactions), in-app notification system with marquee banner, transaction history, cancel with instant balance refund, My Info (PIN change, biometric, privacy, help with +8809606945622/FAQ/support tickets, logout), and Admin Panel (nuralom1/9040) with user management, balance setting, KYC approval, transaction system enable/disable, device management, notification/announcement sending, and support ticket replies. Design: green (#22C55E), white background, mobile-friendly, bottom navigation bar.",
+  "architectural_notes": [
+    "Admin credentials: username=nuralom1, password=9040",
+    "Primary color: #22C55E (green), white background, mobile-friendly UI, bottom navigation bar",
+    "Device fingerprinting/binding: each customer account linked to their device; admin can reset device from panel",
+    "Transaction lock: all transactions blocked unless admin enables the transaction system from admin panel",
+    "KYC gate: all financial transactions require approved KYC (NID, name, address, photo)",
+    "Transaction slip/receipt generated after each transaction; user can save/screenshot",
+    "In-app notifications only (no push notifications); admin sends announcements visible as marquee on home and in notifications page",
+    "Support system: ticket-based (no real-time AI/live chat); help page shows +8809606945622, FAQ, and ticket submission",
+    "Biometric authentication via device WebAuthn/Biometric API, toggleable in Settings",
+    "Transaction cancel immediately refunds balance to customer account"
+  ],
+  "known_issues": [
+    "Registration bug: 'Unauthorized: Only admins can assign user roles' error on registerUser — admin role check incorrectly applied to regular user registration; needs to be removed from registerUser function"
+  ],
+  "isFixRequest": true,
+  "existing_features": [
+    {
+      "id": "feature-build-a-login-registration-screen-login-form-bangladeshi-mobile-number-field-01xxxxxxxxx-format-11-digits-and-4-digit-pin-input-registration-form-mobile-number-full-name-4-digit-pin-confirm-pin-on-first-login-from-a-new-device-store-the-browser-fingerprint-using-navigator-useragent-screen-dimensions-timezone-as-a-composite-device-id-stored-in-localstorage-and-send-it-to-the-backend-if-backend-returns-device-mismatch-error-show-this-account-is-registered-on-another-device-please-contact-support-with-the-support-number-8809606945622-include-a-biometric-login-button-web-authentication-api-webauthn-that-appears-if-biometric-was-previously-enabled-in-settings",
+      "title": "Build a Login / Registration screen. Login form: Bangladeshi mobile number field (01XXXXXXXXX format, 11 digits) and 4-digit PIN input. Registration form: mobile number, full name, 4-digit PIN, confirm PIN. On first login from a new device, store the browser fingerprint (using navigator.userAgent + screen dimensions + timezone as a composite device ID stored in localStorage) and send it to the backend. If backend returns device mismatch error, show 'This account is registered on another device. Please contact support.' with the support number +8809606945622. Include a biometric login button (Web Authentication API / WebAuthn) that appears if biometric was previously enabled in Settings.",
+      "reqIds": [
+        "REQ-5"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-build-the-home-page-with-1-top-bar-with-app-logo-name-notification-bell-icon-with-red-unread-badge-count-and-user-greeting-2-balance-card-showing-current-bdt-balance-prominently-with-eye-toggle-to-hide-show-3-scrolling-marquee-ticker-below-the-balance-card-displaying-the-latest-admin-announcements-4-3x3-grid-of-service-icon-buttons-send-money-recharge-add-money-pay-bill-cash-out-bank-transfer-savings-history-and-my-info-5-bottom-navigation-bar-with-icons-for-home-history-notifications-and-profile",
+      "title": "Build the Home Page with: (1) Top bar with app logo/name, notification bell icon with red unread badge count, and user greeting. (2) Balance card showing current BDT balance prominently with eye toggle to hide/show. (3) Scrolling marquee ticker below the balance card displaying the latest admin announcements. (4) 3x3 grid of service icon buttons: Send Money, Recharge, Add Money, Pay Bill, Cash Out, Bank Transfer, Savings, History, and My Info. (5) Bottom navigation bar with icons for Home, History, Notifications, and Profile.",
+      "reqIds": [
+        "REQ-6"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-build-transaction-screens-for-all-7-services-each-service-screen-follows-this-flow-1-input-form-recipient-number-amount-provider-selection-where-applicable-2-confirmation-modal-3-processing-status-screen-showing-animated-spinner-and-processing-status-4-transaction-slip-screen-on-completion-cancellation-showing-transaction-id-type-amount-in-bdt-recipient-provider-date-time-status-badge-with-a-save-slip-button-that-uses-browser-print-screenshot-functionality-service-specific-details-send-money-recipient-mobile-number-amount-recharge-mobile-number-operator-amount-add-money-source-amount-pay-bill-biller-name-account-number-amount-cash-out-provider-bkash-nagad-rocket-upay-account-number-amount-bank-transfer-bank-name-account-number-routing-amount-savings-deposit-amount-duration-if-kyc-is-not-approved-redirect-to-kyc-submission-page-with-a-message-if-transaction-system-is-disabled-show-transaction-system-is-currently-offline-please-try-again-later",
+      "title": "Build transaction screens for all 7 services. Each service screen follows this flow: (1) Input form (recipient/number/amount/provider selection where applicable), (2) Confirmation modal, (3) Processing status screen showing animated spinner and 'Processing...' status, (4) Transaction Slip screen on completion/cancellation showing: transaction ID, type, amount in BDT, recipient, provider, date/time, status badge — with a 'Save Slip' button that uses browser print/screenshot functionality. Service-specific details: Send Money (recipient mobile number, amount), Recharge (mobile number, operator, amount), Add Money (source, amount), Pay Bill (biller name, account number, amount), Cash Out (provider: bKash/Nagad/Rocket/Upay, account number, amount), Bank Transfer (bank name, account number, routing, amount), Savings (deposit amount, duration). If KYC is not approved, redirect to KYC submission page with a message. If transaction system is disabled, show 'Transaction system is currently offline. Please try again later.'",
+      "reqIds": [
+        "REQ-7"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-build-a-kyc-submission-page-accessible-from-the-profile-or-when-attempting-a-transaction-without-approved-kyc-form-fields-full-name-text-nid-number-text-numeric-address-textarea-photo-selfie-file-upload-rendered-as-base64-preview-show-current-kyc-status-not-submitted-pending-review-approved-rejected-if-rejected-show-rejection-reason-if-available-and-allow-resubmission-if-pending-show-your-kyc-is-under-review-message-if-approved-show-green-checkmark",
+      "title": "Build a KYC Submission page accessible from the profile or when attempting a transaction without approved KYC. Form fields: Full Name (text), NID Number (text, numeric), Address (textarea), Photo/Selfie (file upload rendered as base64 preview). Show current KYC status (Not Submitted / Pending Review / Approved / Rejected). If rejected, show rejection reason if available and allow resubmission. If pending, show 'Your KYC is under review' message. If approved, show green checkmark.",
+      "reqIds": [
+        "REQ-8"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-build-the-transaction-history-page-showing-all-user-transactions-in-a-scrollable-list-each-item-shows-transaction-type-icon-type-label-recipient-provider-amount-colored-red-for-outgoing-green-for-incoming-refunded-status-badge-processing-completed-cancelled-and-date-time-tapping-a-transaction-item-opens-the-transaction-slip-screen-for-that-transaction",
+      "title": "Build the Transaction History page showing all user transactions in a scrollable list. Each item shows: transaction type icon, type label, recipient/provider, amount (colored red for outgoing, green for incoming/refunded), status badge (Processing/Completed/Cancelled), and date/time. Tapping a transaction item opens the Transaction Slip screen for that transaction.",
+      "reqIds": [
+        "REQ-9"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-build-the-notifications-page-showing-all-announcements-notifications-in-a-list-with-title-body-date-and-read-unread-indicator-unread-notifications-are-highlighted-tapping-a-notification-marks-it-as-read-notification-bell-on-home-page-shows-count-of-unread-notifications",
+      "title": "Build the Notifications page showing all announcements/notifications in a list with title, body, date, and read/unread indicator. Unread notifications are highlighted. Tapping a notification marks it as read. Notification bell on home page shows count of unread notifications.",
+      "reqIds": [
+        "REQ-10"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-build-the-my-info-profile-page-with-the-following-sections-1-user-info-header-name-mobile-number-kyc-status-chip-2-settings-section-change-pin-old-pin-new-pin-confirm-biometric-login-toggle-enable-disable-webauthn-biometric-3-privacy-policy-section-static-text-describing-data-privacy-practices-similar-to-standard-fintech-privacy-policies-4-help-section-display-phone-number-8809606945622-as-a-tappable-call-link-faq-accordion-with-common-questions-and-a-support-ticket-form-subject-message-with-ticket-history-showing-admin-replies-5-logout-button-that-clears-session-and-redirects-to-login",
+      "title": "Build the My Info / Profile page with the following sections: (1) User info header (name, mobile number, KYC status chip). (2) Settings section: Change PIN (old PIN + new PIN + confirm), Biometric Login toggle (enable/disable WebAuthn/biometric). (3) Privacy Policy section: static text describing data privacy practices similar to standard fintech privacy policies. (4) Help section: display phone number +8809606945622 as a tappable call link, FAQ accordion with common questions, and a Support Ticket form (subject + message) with ticket history showing admin replies. (5) Logout button that clears session and redirects to login.",
+      "reqIds": [
+        "REQ-11"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-build-the-admin-panel-as-a-separate-route-admin-admin-login-form-username-password-after-login-with-nuralom1-9040-show-a-dashboard-with-tabs-sections-1-dashboard-summary-stats-total-users-pending-kyc-count-total-transactions-open-tickets-2-transaction-control-global-toggle-to-enable-disable-the-transaction-system-with-a-prominent-on-off-switch-and-current-status-display-3-user-management-searchable-list-of-all-users-showing-name-mobile-balance-kyc-status-device-id-actions-per-user-set-balance-input-field-approve-reject-kyc-reset-device-id-4-transaction-management-list-of-all-transactions-with-filter-by-status-actions-complete-or-cancel-individual-transactions-5-notifications-form-to-compose-and-send-a-new-announcement-title-body-to-all-users-list-of-sent-announcements-6-support-tickets-list-of-all-open-replied-tickets-ability-to-type-and-submit-a-reply-per-ticket",
+      "title": "Build the Admin Panel as a separate route (/admin). Admin login form (username + password). After login with nuralom1/9040, show a dashboard with tabs/sections: (1) Dashboard: summary stats (total users, pending KYC count, total transactions, open tickets). (2) Transaction Control: global toggle to enable/disable the transaction system with a prominent ON/OFF switch and current status display. (3) User Management: searchable list of all users showing name, mobile, balance, KYC status, device ID; actions per user: Set Balance (input field), Approve/Reject KYC, Reset Device ID. (4) Transaction Management: list of all transactions with filter by status; actions: Complete or Cancel individual transactions. (5) Notifications: form to compose and send a new announcement (title + body) to all users; list of sent announcements. (6) Support Tickets: list of all open/replied tickets; ability to type and submit a reply per ticket.",
+      "reqIds": [
+        "REQ-12"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-apply-a-consistent-visual-design-throughout-the-app-primary-color-22c55e-green-white-background-mobile-first-layout-with-max-width-430px-centered-on-desktop-use-a-clean-fintech-aesthetic-with-card-based-ui-subtle-shadows-rounded-corners-and-green-gradient-accents-typography-should-be-clear-and-readable-bottom-navigation-bar-fixed-at-the-bottom-of-the-screen-on-all-main-pages-service-icon-buttons-should-use-colored-icon-backgrounds-with-labels-beneath-transaction-status-badges-use-semantic-colors-yellow-green-red-the-admin-panel-can-use-a-wider-layout-with-a-sidebar-or-top-tabs",
+      "title": "Apply a consistent visual design throughout the app: primary color #22C55E (green), white background, mobile-first layout with max-width ~430px centered on desktop. Use a clean fintech aesthetic with card-based UI, subtle shadows, rounded corners, and green gradient accents. Typography should be clear and readable. Bottom navigation bar fixed at the bottom of the screen on all main pages. Service icon buttons should use colored icon backgrounds with labels beneath. Transaction status badges use semantic colors (yellow, green, red). The admin panel can use a wider layout with a sidebar or top tabs.",
+      "reqIds": [
+        "REQ-13"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-generate-and-use-a-logo-brand-image-for-the-app-header-a-green-circular-icon-with-a-stylized-n-or-currency-symbol-representing-a-mobile-banking-brand",
+      "title": "Generate and use a logo/brand image for the app header: a green circular icon with a stylized 'N' or currency symbol representing a mobile banking brand.",
+      "reqIds": [
+        "REQ-14"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-ensure-the-admin-panel-login-at-admin-works-correctly-with-credentials-nuralom1-9040-the-admin-login-form-must-authenticate-successfully-with-these-credentials-store-an-admin-session-token-in-localstorage-and-redirect-to-the-admin-dashboard-all-admin-dashboard-tabs-dashboard-stats-transaction-control-user-management-transaction-management-notifications-support-tickets-must-be-accessible-after-login",
+      "title": "Ensure the Admin Panel login at `/admin` works correctly with credentials `nuralom1` / `9040`. The admin login form must authenticate successfully with these credentials, store an admin session token in localStorage, and redirect to the admin dashboard. All admin dashboard tabs (Dashboard stats, Transaction Control, User Management, Transaction Management, Notifications, Support Tickets) must be accessible after login.",
+      "reqIds": [
+        "REQ-16"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-after-fixing-the-registeruser-bug-verify-that-the-full-user-authentication-flow-works-end-to-end-1-a-new-user-can-register-with-mobile-number-full-name-and-pin-2-the-same-user-can-then-log-in-with-their-mobile-number-and-pin-3-device-fingerprint-is-stored-on-first-login-4-subsequent-logins-from-the-same-device-succeed-without-device-mismatch-errors",
+      "title": "After fixing the registerUser bug, verify that the full user authentication flow works end-to-end: (1) A new user can register with mobile number, full name, and PIN; (2) The same user can then log in with their mobile number and PIN; (3) Device fingerprint is stored on first login; (4) Subsequent logins from the same device succeed without device mismatch errors.",
+      "reqIds": [
+        "REQ-17"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Login page with Bangladeshi mobile number + 4-digit PIN + device binding + biometric option",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Home page with BDT balance display, scrollable marquee announcement banner, notification bell, and service icons",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "Send Money service with processing status and transaction slip",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-4",
+      "summary": "Mobile Recharge service with processing status and transaction slip",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-5",
+      "summary": "Add Money service with processing status and transaction slip",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-6",
+      "summary": "Pay Bill service with processing status and transaction slip",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-7",
+      "summary": "Cash Out service (bKash/Nagad/Rocket/Upay) with processing status and transaction slip",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-8",
+      "summary": "Bank Transfer service with processing status and transaction slip",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-9",
+      "summary": "Savings service",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-10",
+      "summary": "Transaction cancellation with instant balance refund",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-11",
+      "summary": "KYC system (NID, name, address, photo) mandatory before any transaction",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-12",
+      "summary": "Transaction history page showing all transactions",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-13",
+      "summary": "In-app notification system with bell icon, unread indicator, notifications page, and home marquee banner",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-14",
+      "summary": "My Info page with Settings, PIN change, biometric toggle, Privacy Policy, Help (+8809606945622, FAQ, support ticket system), Logout",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-15",
+      "summary": "Admin Panel (nuralom1/9040): user management, balance setting, KYC approval/reject, transaction system enable/disable, transaction management, device management/reset, notification/announcement sending, support ticket replies",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-16",
+      "summary": "Create a Motoko backend actor with the following data models and logic: User (id, mobile: Text, pinHash: Text, name: Text, balance: Float, deviceId: Text, biometricEnabled: Bool, kycStatus: {#pending; #approved; #rejected}, kycData: {nid: Text, fullName: Text, address: Text, photoUrl: Text}, createdAt: Int), Transaction (id, userId, type: {#sendMoney; #recharge; #addMoney; #payBill; #cashOut; #bankTransfer; #savings}, amount: Float, recipient: Text, provider: Text, status: {#processing; #completed; #cancelled}, slipData: Text, createdAt: Int), Notification (id, title: Text, body: Text, createdAt: Int, isGlobal: Bool), UserNotification (userId, notificationId, isRead: Bool), SupportTicket (id, userId, subject: Text, message: Text, adminReply: Text, status: {#open; #replied; #closed}, createdAt: Int), and AppSettings (transactionSystemEnabled: Bool). Admin credentials hardcoded: username='nuralom1', password='9040'.",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-17",
+      "summary": "Implement backend functions: registerUser(mobile, pin, name, deviceId) -> Result, loginUser(mobile, pin, deviceId) -> Result (validate device match), getUser(userId) -> User, updateDeviceId(userId, newDeviceId) -> Result (admin only), changePIN(userId, oldPin, newPin) -> Result, submitKYC(userId, nid, fullName, address, photoUrl) -> Result, approveKYC(adminToken, userId) -> Result, rejectKYC(adminToken, userId) -> Result, setUserBalance(adminToken, userId, amount) -> Result, resetUserDevice(adminToken, userId, newDeviceId) -> Result.",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-18",
+      "summary": "Implement backend transaction functions: createTransaction(userId, type, amount, recipient, provider) -> Result — must enforce: (a) AppSettings.transactionSystemEnabled is true, (b) user KYC is approved, (c) user has sufficient balance; deduct balance immediately on creation and set status to #processing. completeTransaction(adminToken, txId) -> Result sets status to #completed. cancelTransaction(adminToken, txId) -> Result sets status to #cancelled and immediately refunds full amount to user balance. getUserTransactions(userId) -> [Transaction]. getAllTransactions(adminToken) -> [Transaction].",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-19",
+      "summary": "Implement backend notification and support ticket functions: createAnnouncement(adminToken, title, body) -> Result broadcasts to all users. getUserNotifications(userId) -> [Notification with isRead]. markNotificationRead(userId, notificationId) -> Result. createSupportTicket(userId, subject, message) -> Result. replyToTicket(adminToken, ticketId, reply) -> Result sets status to #replied. getAllTickets(adminToken) -> [SupportTicket]. getUserTickets(userId) -> [SupportTicket]. getAppSettings(adminToken) -> AppSettings. setTransactionSystemEnabled(adminToken, enabled: Bool) -> Result.",
+      "reqIds": [
+        "REQ-4"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-20",
+      "summary": "Fix the `registerUser` backend function so that it no longer performs any admin role check or role assignment. Regular users must be able to register with mobile number, full name, 4-digit PIN, and device ID without receiving 'Unauthorized: Only admins can assign user roles' error. The function should simply create a new user record with a default user role and return a success result.",
+      "reqIds": [
+        "REQ-15"
+      ],
+      "status": "pending"
+    }
+  ],
+  "gameProjectType": "none",
+  "projectName": "Mobile Banking App",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0
+}

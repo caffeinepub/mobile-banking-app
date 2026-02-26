@@ -1,0 +1,20 @@
+{
+  "frontend/src/App.tsx": "Main app with TanStack Router setup including all routes: login, home, 7 transaction pages, profile, KYC, notifications, history, and admin login/dashboard routes.",
+  "frontend/src/components/PhotoUpload.tsx": "Photo upload component for KYC that uses FileReader API to convert images to base64 data URLs for preview and storage, without any external blob-storage dependency.",
+  "frontend/src/pages/transactions/TransactionPage.tsx": "Reusable transaction flow component handling form input, confirmation modal, processing screen, and transaction slip display for all 7 transaction types.",
+  "frontend/src/pages/transactions/SendMoneyPage.tsx": "Send Money transaction page using the shared TransactionPage component with recipient mobile number field.",
+  "frontend/src/pages/transactions/RechargePage.tsx": "Mobile Recharge transaction page with mobile number and operator selection (GP, Robi, Banglalink, Teletalk, Airtel).",
+  "frontend/src/pages/transactions/AddMoneyPage.tsx": "Add Money transaction page with source provider selection (bKash, Nagad, Rocket, Upay, Bank).",
+  "frontend/src/pages/transactions/PayBillPage.tsx": "Pay Bill transaction page with biller selection (DESCO, DPDC, Titas Gas, WASA, BTCL, Internet) and account number field.",
+  "frontend/src/pages/transactions/CashOutPage.tsx": "Cash Out transaction page with provider selection (bKash, Nagad, Rocket, Upay) and account number field.",
+  "frontend/src/pages/transactions/BankTransferPage.tsx": "Bank Transfer transaction page with bank name selection, account number, and routing number fields.",
+  "frontend/src/pages/transactions/SavingsPage.tsx": "Savings transaction page with savings plan duration selection and purpose/note field.",
+  "frontend/src/pages/admin/AdminLoginPage.tsx": "Admin login page that validates credentials against hardcoded nuralom1/9040, stores admin token in localStorage on success, and redirects to /admin/dashboard. Redirects to dashboard if already authenticated.",
+  "frontend/src/pages/admin/AdminDashboardPage.tsx": "Full admin dashboard with six tabs (Dashboard, TX Control, User Management, TX Management, Notifications, Support Tickets); handleAction uses Promise<unknown> return type to fix TypeScript errors; protected by admin token check on mount.",
+  "frontend/src/hooks/useQueries.ts": "All React Query hooks for backend interactions; useRegisterUser calls actor.registerUser directly without any role assignment; useGetUserNotifications/Transactions/Tickets accept nullable userId; admin hooks use ADMIN_TOKEN constant 'nuralom1:9040'.",
+  "frontend/src/utils/deviceFingerprint.ts": "Generates and persists a stable browser device fingerprint in localStorage using navigator/screen properties, returning the same fingerprint on subsequent calls from the same device.",
+  "frontend/src/utils/adminAuth.ts": "Admin authentication utilities with hardcoded credentials (nuralom1/9040), token generation/storage/retrieval via localStorage, and validation functions.",
+  "frontend/src/store/authStore.ts": "Zustand auth store with full backward-compatible interface supporting both old field names (userName, userMobile, userBalance, kycStatus, isLoggedIn, setUser, setBalance, setKycStatus) and new aliases (isAuthenticated, balance, login, updateBalance, updateKycStatus), persisted to localStorage.",
+  "frontend/src/pages/LoginPage.tsx": "Login/Register page with tab switcher; RegisterForm calls registerUser mutation directly (no role assignment) and shows success message before switching to login tab; LoginForm handles device mismatch with support number +8809606945622.",
+  "frontend/src/pages/HomePage.tsx": "Home page showing balance card, notification marquee, services grid, and quick actions. Redirects unauthenticated users to /login and includes logout functionality."
+}

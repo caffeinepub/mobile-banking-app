@@ -1,0 +1,79 @@
+{
+  "kind": "coverage_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-26T09:45:45.325Z",
+  "sources": {
+    "buildRequest": true,
+    "implementationPlan": true
+  },
+  "requirements": {
+    "total": 3,
+    "implemented": 2,
+    "items": [
+      {
+        "id": "REQ-15",
+        "summary": "Fix the `registerUser` backend function so that it no longer performs any admin role check or role assignment. Regular users must be able to register with mobile number, full name, 4-digit PIN, and device ID without receiving 'Unauthorized: Only admins can assign user roles' error. The function should simply create a new user record with a default user role and return a success result.",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-16",
+        "summary": "Ensure the Admin Panel login at `/admin` works correctly with credentials `nuralom1` / `9040`. The admin login form must authenticate successfully with these credentials, store an admin session token in localStorage, and redirect to the admin dashboard. All admin dashboard tabs (Dashboard stats, Transaction Control, User Management, Transaction Management, Notifications, Support Tickets) must be accessible after login.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/pages/admin/AdminLoginPage.tsx",
+          "frontend/src/utils/adminAuth.ts",
+          "frontend/src/pages/admin/AdminDashboardPage.tsx",
+          "frontend/src/App.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/pages/admin/AdminLoginPage.tsx",
+          "frontend/src/utils/adminAuth.ts",
+          "frontend/src/pages/admin/AdminDashboardPage.tsx",
+          "frontend/src/App.tsx"
+        ]
+      },
+      {
+        "id": "REQ-17",
+        "summary": "After fixing the registerUser bug, verify that the full user authentication flow works end-to-end: (1) A new user can register with mobile number, full name, and PIN; (2) The same user can then log in with their mobile number and PIN; (3) Device fingerprint is stored on first login; (4) Subsequent logins from the same device succeed without device mismatch errors.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/pages/LoginPage.tsx",
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/store/authStore.ts",
+          "frontend/src/utils/deviceFingerprint.ts",
+          "frontend/src/pages/HomePage.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/pages/LoginPage.tsx",
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/store/authStore.ts",
+          "frontend/src/utils/deviceFingerprint.ts",
+          "frontend/src/pages/HomePage.tsx"
+        ]
+      }
+    ]
+  },
+  "changedFiles": [
+    "backend/main.mo",
+    "build-request.json",
+    "build-template/README.md",
+    "feature_evidence.json",
+    "frontend-file-summaries.txt",
+    "frontend-implementation-plan.json",
+    "frontend/src/App.tsx",
+    "frontend/src/hooks/useQueries.ts",
+    "frontend/src/pages/HomePage.tsx",
+    "frontend/src/pages/LoginPage.tsx",
+    "frontend/src/pages/admin/AdminDashboardPage.tsx",
+    "frontend/src/pages/admin/AdminLoginPage.tsx",
+    "frontend/src/store/authStore.ts",
+    "frontend/src/utils/adminAuth.ts",
+    "frontend/src/utils/deviceFingerprint.ts",
+    "project_state.json",
+    "scratch/component-selection.json",
+    "spec.md",
+    "spec_vs_diff_report.json"
+  ]
+}
