@@ -1,76 +1,114 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Fix registerUser bug and ensure admin panel login works",
+  "title": "Android PWA Install Support (Android 10–16) & App Completeness Polish",
   "requirements": [
     {
-      "id": "REQ-16",
-      "summary": "Ensure admin panel login at /admin works with credentials nuralom1/9040 and grants access to all dashboard tabs",
+      "id": "REQ-25",
+      "summary": "Add Progressive Web App (PWA) support with manifest.json, service worker, and mobile meta tags for Android 10–16 installability",
       "acceptanceCriteria": [
-        "Navigating to /admin shows the admin login form",
-        "Entering username 'nuralom1' and password '9040' and submitting redirects to the admin dashboard",
-        "Incorrect credentials show an error message and do not grant access",
-        "Admin session token is persisted in localStorage so the dashboard remains accessible on page reload",
-        "All six admin dashboard sections are reachable after successful login"
+        "A manifest.json is present in frontend/public with correct name, icons, display:standalone, and theme colors",
+        "A service worker is registered that caches the app shell",
+        "Visiting the app in Chrome on Android 10+ shows an 'Add to Home Screen' / install prompt",
+        "After installation, the app opens in standalone mode (no browser chrome)",
+        "The installed app displays the NURPAY blue shield + gold N icon on the Android home screen"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/pages/admin/AdminLoginPage.tsx",
-          "operation": "modify",
-          "description": "Review the hardcoded admin credential validation logic to ensure username 'nuralom1' and password '9040' are correctly checked. Verify that on successful validation, an admin token is stored in localStorage and the user is redirected to /admin/dashboard. Ensure incorrect credentials display an error message without granting access."
+          "path": "frontend/public/manifest.json",
+          "operation": "create",
+          "description": "Create a web app manifest with name 'BDT NURPAY WALLET', short_name 'NURPAY', theme_color '#1E3A8A', background_color '#ffffff', display 'standalone', orientation 'portrait', and icon entries referencing frontend/public/assets/generated/nurpay-icon-192.dim_192x192.png and frontend/public/assets/generated/nurpay-icon-512.dim_512x512.png with sizes 192x192 and 512x512 respectively, type 'image/png'"
         },
         {
-          "path": "frontend/src/utils/adminAuth.ts",
-          "operation": "modify",
-          "description": "Verify the validateAdminCredentials function correctly compares username against 'nuralom1' and password against '9040'. Confirm the admin token management functions (getAdminToken, setAdminToken, clearAdminToken) properly persist and retrieve the token from localStorage."
+          "path": "frontend/public/sw.js",
+          "operation": "create",
+          "description": "Create a service worker that caches the app shell (index.html, main.tsx, App.tsx, CSS, and core route files) on install and serves them from cache with a network-first fallback strategy for dynamic content. Include versioned cache naming and proper activation logic to clean up old caches. Ensure TanStack Router hash-based routing continues to work correctly after caching."
         },
         {
-          "path": "frontend/src/pages/admin/AdminDashboardPage.tsx",
+          "path": "frontend/index.html",
           "operation": "modify",
-          "description": "Ensure the dashboard page checks for a valid admin token on mount and redirects to /admin if missing. Verify all six tabs (Dashboard stats, Transaction Control, User Management, Transaction Management, Notifications, Support Tickets) are rendered and accessible after successful login."
-        },
-        {
-          "path": "frontend/src/App.tsx",
-          "operation": "modify",
-          "description": "Verify the /admin and /admin/dashboard routes are correctly registered in the router configuration so navigation between the login page and dashboard works as expected."
+          "description": "Add <link rel='manifest' href='/manifest.json'> in the <head> section. Add <meta name='mobile-web-app-capable' content='yes'> and <meta name='apple-mobile-web-app-capable' content='yes'> for mobile app behavior. Register the service worker by adding a <script> block before the closing </body> tag that checks for 'serviceWorker' in navigator and registers '/sw.js' if available."
         }
       ]
     },
     {
-      "id": "REQ-17",
-      "summary": "Verify the full user authentication flow works end-to-end after the registerUser fix: registration, login, device fingerprint storage, and device mismatch handling",
+      "id": "REQ-26",
+      "summary": "Generate and wire PWA icon assets (192x192 and 512x512) showing NURPAY blue shield + gold N logo",
       "acceptanceCriteria": [
-        "Registration completes without errors and returns a user ID",
-        "Login with correct mobile + PIN returns user data and stores device fingerprint",
-        "Subsequent login from the same device (same fingerprint) succeeds",
-        "Login from a different device fingerprint shows the device mismatch error with support number +8809606945622",
-        "After login, the user is redirected to the Home page"
+        "nurpay-icon-192.png exists at frontend/public/assets/generated/nurpay-icon-192.png",
+        "nurpay-icon-512.png exists at frontend/public/assets/generated/nurpay-icon-512.png",
+        "manifest.json references both icon files with correct sizes and type image/png"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/pages/LoginPage.tsx",
+          "path": "frontend/public/manifest.json",
           "operation": "modify",
-          "description": "Review the registration tab form submission flow to ensure it calls the registerUser mutation with mobile, pin, name, and deviceId. Verify that on success, the user is informed of successful registration. Review the login tab form submission to confirm it calls loginUser with mobile, pin, and deviceId, and on success stores the returned userId and balance in authStore and redirects to /home. Ensure device mismatch errors display the support number +8809606945622."
+          "description": "Ensure the icons array in manifest.json references frontend/public/assets/generated/nurpay-icon-192.dim_192x192.png with sizes '192x192' and frontend/public/assets/generated/nurpay-icon-512.dim_512x512.png with sizes '512x512', both with type 'image/png' and purpose 'any maskable'. The generated images (blue shield with gold N) will be placed at these exact paths by the image generation process."
+        }
+      ]
+    },
+    {
+      "id": "REQ-27",
+      "summary": "Add an in-app 'Install App' banner on the Home page that triggers the native PWA install prompt when available",
+      "acceptanceCriteria": [
+        "An install banner appears on the Home page when beforeinstallprompt fires",
+        "Tapping 'Install' triggers the browser's native install prompt",
+        "Dismissing the banner hides it for the session without breaking other UI",
+        "The banner does not appear if the app is already installed in standalone mode"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/hooks/usePWAInstall.ts",
+          "operation": "create",
+          "description": "Create a custom React hook that listens for the 'beforeinstallprompt' event, stores the event object in state, provides an installApp function that calls prompt() on the stored event, tracks installation status by listening to 'appinstalled' event, and checks if the app is already running in standalone mode (window.matchMedia('(display-mode: standalone)').matches). Expose isInstallable, isInstalled, installApp, and dismissPrompt functions."
         },
         {
-          "path": "frontend/src/hooks/useQueries.ts",
-          "operation": "modify",
-          "description": "Verify the useRegisterUser mutation correctly calls actor.registerUser(mobile, pin, name, deviceId) and handles success/error responses. Confirm the useLoginUser mutation calls actor.loginUser(mobile, pin, deviceId), parses the returned user data, and stores userId and balance. Ensure device mismatch errors are properly surfaced to the UI."
-        },
-        {
-          "path": "frontend/src/store/authStore.ts",
-          "operation": "modify",
-          "description": "Confirm the authStore correctly persists userId, balance, and KYC status to localStorage so the session survives page reloads. Verify the login action updates these fields and the logout action clears them."
-        },
-        {
-          "path": "frontend/src/utils/deviceFingerprint.ts",
-          "operation": "modify",
-          "description": "Verify the getDeviceFingerprint function generates a stable fingerprint ID from browser properties (user agent, screen, timezone, language) and persists it in localStorage. Confirm it returns the same fingerprint on subsequent calls from the same device."
+          "path": "frontend/src/components/InstallBanner.tsx",
+          "operation": "create",
+          "description": "Create an InstallBanner component that uses the usePWAInstall hook. Display a dismissible banner at the top of the page (below the header) with the text 'Install NURPAY on your device', a download icon, and an 'Install' button styled in primary blue (#1E3A8A). Show the banner only when isInstallable is true and isInstalled is false. On Install button click, call installApp(). On dismiss (X button click), call dismissPrompt() and hide the banner for the session. Use Tailwind classes for styling consistent with the app theme."
         },
         {
           "path": "frontend/src/pages/HomePage.tsx",
           "operation": "modify",
-          "description": "Ensure the HomePage redirects unauthenticated users (no userId in authStore) to /login. Verify that after successful login, the user can access the balance card, announcement marquee, and service grid."
+          "description": "Import and render the InstallBanner component at the top of the HomePage content area, below the AppHeader and above the BalanceCard. The banner will automatically show/hide based on PWA install availability and will not interfere with existing home page functionality."
+        }
+      ]
+    },
+    {
+      "id": "REQ-28",
+      "summary": "Ensure the Admin Panel is fully accessible and functional when the app runs as an installed PWA on Android 10–16",
+      "acceptanceCriteria": [
+        "Navigating to /admin in the installed PWA loads the admin login page",
+        "Admin login with nuralom1/9040 succeeds and redirects to the dashboard",
+        "All admin dashboard tabs are reachable and functional on Android Chrome in standalone mode",
+        "Data export (CSV/JSON) downloads work correctly on Android (using blob URL download)"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/admin/AdminDashboardPage.tsx",
+          "operation": "modify",
+          "description": "Review and ensure all CSV/JSON export functionality uses blob URLs (URL.createObjectURL) and programmatic <a> element downloads with proper cleanup (URL.revokeObjectURL). Verify that all export buttons trigger downloads correctly in standalone PWA mode on Android by using the download attribute and simulating a click event. No changes needed if already implemented correctly; otherwise, refactor export handlers to use blob-based downloads compatible with Android PWA context."
+        },
+        {
+          "path": "frontend/public/sw.js",
+          "operation": "modify",
+          "description": "Ensure the service worker does not intercept or cache admin routes (/admin/*) or API calls, allowing dynamic admin functionality to work correctly in standalone mode. Use a network-first strategy for admin routes and backend actor calls. Add explicit exclusion logic in the fetch event handler to bypass caching for paths starting with /admin or containing backend API patterns."
+        }
+      ]
+    },
+    {
+      "id": "REQ-29",
+      "summary": "Add viewport and theme-color meta tags in index.html for correct rendering and status bar styling on Android 10–16",
+      "acceptanceCriteria": [
+        "index.html contains <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'>",
+        "index.html contains <meta name='theme-color' content='#1E3A8A'>",
+        "The app renders without horizontal scroll or zoom issues on common Android screen sizes"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/index.html",
+          "operation": "modify",
+          "description": "Add or update the <meta name='viewport'> tag in the <head> section with content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no' to prevent zoom and ensure consistent layout on all Android screen sizes. Add <meta name='theme-color' content='#1E3A8A'> to style the Android status bar in the primary blue theme color when the app runs in standalone mode. Verify existing viewport tag is replaced if present."
         }
       ]
     }

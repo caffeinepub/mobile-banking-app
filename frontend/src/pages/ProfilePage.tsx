@@ -341,25 +341,11 @@ export default function ProfilePage() {
         <Button
           onClick={handleLogout}
           variant="outline"
-          className="w-full h-12 rounded-xl border-red-200 text-red-600 hover:bg-red-50 gap-2 font-semibold"
+          className="w-full h-12 rounded-xl border-red-200 text-red-600 hover:bg-red-50 gap-2 font-semibold mb-4"
         >
           <LogOut size={18} />
           Logout
         </Button>
-
-        {/* Footer */}
-        <p className="text-center text-xs text-gray-400 pb-2">
-          Built with ❤️ using{' '}
-          <a
-            href={`https://caffeine.ai/?utm_source=Caffeine-footer&utm_medium=referral&utm_content=${encodeURIComponent(window.location.hostname || 'nuropay-banking')}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-primary-500 hover:underline"
-          >
-            caffeine.ai
-          </a>{' '}
-          © {new Date().getFullYear()}
-        </p>
       </div>
     </Layout>
   );

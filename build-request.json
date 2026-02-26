@@ -1,83 +1,122 @@
 {
   "kind": "build_request",
-  "title": "Fix registerUser bug and ensure admin panel login works",
-  "projectName": "NuroPay",
-  "priority": "high",
+  "title": "Android PWA Install Support (Android 10–16) & App Completeness Polish",
+  "projectName": "BDT NURPAY WALLET",
+  "priority": "normal",
   "requirements": [
     {
-      "id": "REQ-15",
-      "text": "Fix the `registerUser` backend function so that it no longer performs any admin role check or role assignment. Regular users must be able to register with mobile number, full name, 4-digit PIN, and device ID without receiving 'Unauthorized: Only admins can assign user roles' error. The function should simply create a new user record with a default user role and return a success result.",
-      "target": "backend",
-      "source": {
-        "messageIds": [
-          "msg-recent"
-        ],
-        "quotes": [
-          "Unauthorized: Only admins can assign user roles",
-          "New registerUser update run"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Submitting the registration form with valid full name, mobile number (01XXXXXXXXX), and 4-digit PIN creates the user account successfully without any error",
-        "No admin role check is present in the registerUser function",
-        "Newly registered users receive a default non-admin role",
-        "The error message 'Unauthorized: Only admins can assign user roles' no longer appears during registration"
-      ]
-    },
-    {
-      "id": "REQ-16",
-      "text": "Ensure the Admin Panel login at `/admin` works correctly with credentials `nuralom1` / `9040`. The admin login form must authenticate successfully with these credentials, store an admin session token in localStorage, and redirect to the admin dashboard. All admin dashboard tabs (Dashboard stats, Transaction Control, User Management, Transaction Management, Notifications, Support Tickets) must be accessible after login.",
+      "id": "REQ-25",
+      "text": "Add Progressive Web App (PWA) support so the app can be installed on Android devices running Android 10 through Android 16. Create a valid web app manifest (manifest.json) in the frontend/public directory with the app name 'BDT NURPAY WALLET', short_name 'NURPAY', theme_color '#1E3A8A', background_color '#ffffff', display 'standalone', orientation 'portrait', and icon entries for 192x192 and 512x512 PNG sizes. Register a service worker (sw.js) in frontend/public that caches the app shell for offline capability. Reference the manifest in frontend/index.html with a <link rel='manifest'> tag and add the mobile-web-app-capable and apple-mobile-web-app-capable meta tags.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-recent"
+          "msg-1"
         ],
         "quotes": [
-          "admin panel login user setup run complete project"
+          "Android setup install app download and admin all control app install android 10 ভার্সন হইতে ১৬ ভার্সন পর্যন্ত run"
         ]
       },
       "acceptanceCriteria": [
-        "Navigating to /admin shows the admin login form",
-        "Entering username 'nuralom1' and password '9040' and submitting redirects to the admin dashboard",
-        "Incorrect credentials show an error message and do not grant access",
-        "Admin session token is persisted in localStorage so the dashboard remains accessible on page reload",
-        "All six admin dashboard sections are reachable after successful login"
+        "A manifest.json is present in frontend/public with correct name, icons, display:standalone, and theme colors",
+        "A service worker is registered that caches the app shell",
+        "Visiting the app in Chrome on Android 10+ shows an 'Add to Home Screen' / install prompt",
+        "After installation, the app opens in standalone mode (no browser chrome)",
+        "The installed app displays the NURPAY blue shield + gold N icon on the Android home screen"
       ]
     },
     {
-      "id": "REQ-17",
-      "text": "After fixing the registerUser bug, verify that the full user authentication flow works end-to-end: (1) A new user can register with mobile number, full name, and PIN; (2) The same user can then log in with their mobile number and PIN; (3) Device fingerprint is stored on first login; (4) Subsequent logins from the same device succeed without device mismatch errors.",
-      "target": "both",
+      "id": "REQ-26",
+      "text": "Generate PWA icon assets for the manifest: a 192x192 PNG and a 512x512 PNG version of the NURPAY blue shield + gold 'N' logo, and place them as frontend/public/assets/generated/nurpay-icon-192.png and frontend/public/assets/generated/nurpay-icon-512.png. Reference these filenames in the manifest.json icons array.",
+      "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-recent"
+          "msg-1"
         ],
         "quotes": [
-          "complete project"
+          "Android setup install app download"
         ]
       },
       "acceptanceCriteria": [
-        "Registration completes without errors and returns a user ID",
-        "Login with correct mobile + PIN returns user data and stores device fingerprint",
-        "Subsequent login from the same device (same fingerprint) succeeds",
-        "Login from a different device fingerprint shows the device mismatch error with support number +8809606945622",
-        "After login, the user is redirected to the Home page"
+        "nurpay-icon-192.png exists at frontend/public/assets/generated/nurpay-icon-192.png",
+        "nurpay-icon-512.png exists at frontend/public/assets/generated/nurpay-icon-512.png",
+        "manifest.json references both icon files with correct sizes and type image/png"
+      ]
+    },
+    {
+      "id": "REQ-27",
+      "text": "Add an in-app 'Install App' banner/button on the Home page that appears when the PWA install prompt (beforeinstallprompt event) is available. The banner should display 'Install NURPAY on your device' with a download icon and an 'Install' button styled in the primary blue (#1E3A8A) theme. Dismissing the banner hides it for the session. On Android, tapping 'Install' triggers the native install prompt.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "Android setup install app download"
+        ]
+      },
+      "acceptanceCriteria": [
+        "An install banner appears on the Home page when beforeinstallprompt fires",
+        "Tapping 'Install' triggers the browser's native install prompt",
+        "Dismissing the banner hides it for the session without breaking other UI",
+        "The banner does not appear if the app is already installed in standalone mode"
+      ]
+    },
+    {
+      "id": "REQ-28",
+      "text": "Ensure the Admin Panel (/admin) is fully accessible and functional when the app is opened as an installed PWA on Android. The admin login (nuralom1/9040), all six dashboard tabs (Dashboard, Transaction Control, User Management, Transaction Management, Notifications, Support Tickets, Backup & Export), and all admin actions (set balance, approve/reject KYC, reset device, complete/cancel transactions, send announcements, reply to tickets, export CSV/JSON) must work correctly within the standalone PWA context on Android 10–16.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "admin all control app install android 10 ভার্সন হইতে ১৬ ভার্সন পর্যন্ত run"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Navigating to /admin in the installed PWA loads the admin login page",
+        "Admin login with nuralom1/9040 succeeds and redirects to the dashboard",
+        "All admin dashboard tabs are reachable and functional on Android Chrome in standalone mode",
+        "Data export (CSV/JSON) downloads work correctly on Android (using blob URL download)"
+      ]
+    },
+    {
+      "id": "REQ-29",
+      "text": "Add a viewport meta tag in frontend/index.html ensuring the app renders correctly on all Android screen sizes from Android 10 to Android 16: use content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'. Also add a theme-color meta tag set to #1E3A8A to style the Android status bar when the app runs in standalone mode.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "android 10 ভার্সন হইতে ১৬ ভার্সন পর্যন্ত run"
+        ]
+      },
+      "acceptanceCriteria": [
+        "index.html contains <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'>",
+        "index.html contains <meta name='theme-color' content='#1E3A8A'>",
+        "The app renders without horizontal scroll or zoom issues on common Android screen sizes"
       ]
     }
   ],
   "constraints": [
-    "Do not change the admin credentials — username must remain 'nuralom1' and password '9040'",
-    "Do not modify any files under frontend/src/hooks/ or frontend/src/components/ui/",
-    "The registerUser fix must only remove the unauthorized role assignment check — do not alter other validation logic (mobile format, PIN length, duplicate mobile check)"
+    "Do not modify any files listed in frontend.immutablePaths",
+    "PWA service worker must not break existing routing (TanStack Router hash/history routing must still work after SW caching)",
+    "Admin credentials remain nuralom1/9040 — do not change backend auth logic",
+    "All existing features and pages must remain fully functional after PWA additions"
   ],
   "nonGoals": [
-    "Adding new registration form fields beyond existing ones",
-    "Changing the visual design of the login/registration or admin panel pages",
-    "Implementing a new role/permission system",
-    "Modifying any transaction, KYC, or notification logic"
+    "Native Android APK packaging (Capacitor, Cordova, React Native) — PWA install is the target approach",
+    "iOS-specific packaging or App Store submission",
+    "Push notification implementation via service worker",
+    "Changes to any backend Motoko logic",
+    "Any new app features beyond PWA installability and Android compatibility"
   ],
   "imageRequirements": {
-    "required": [],
+    "required": [
+      "Blue shield shape with a gold stylized 'N' letter centered, clean flat design on transparent background, square format (nurpay-icon-192.dim_192x192.png)",
+      "Blue shield shape with a gold stylized 'N' letter centered, clean flat design on transparent background, square format, high resolution (nurpay-icon-512.dim_512x512.png)"
+    ],
     "edits": []
   }
 }

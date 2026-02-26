@@ -15,11 +15,11 @@ import {
   ChevronRight,
   Eye,
   EyeOff,
-  Loader2,
 } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 import { useGetUserNotifications } from '../hooks/useQueries';
 import { useQueryClient } from '@tanstack/react-query';
+import InstallBanner from '../components/InstallBanner';
 
 export default function HomePage() {
   const navigate = useNavigate();
@@ -107,6 +107,9 @@ export default function HomePage() {
           <div className="text-white/60 text-xs mt-1">User ID: {userId}</div>
         </div>
       </header>
+
+      {/* PWA Install Banner */}
+      <InstallBanner />
 
       {/* Announcement Marquee */}
       {notifications && notifications.length > 0 && (

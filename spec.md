@@ -1,11 +1,14 @@
 # Specification
 
 ## Summary
-**Goal:** Fix the user registration bug causing "Unauthorized: Only admins can assign user roles" error, ensure the admin panel login works, and verify the full end-to-end authentication flow.
+**Goal:** Add Progressive Web App (PWA) support so BDT NURPAY WALLET can be installed on Android devices (Android 10–16) and ensure the full app including the admin panel works correctly in standalone PWA mode.
 
 **Planned changes:**
-- Remove the admin role check from the `registerUser` backend function so new users can register with mobile number, full name, and 4-digit PIN without errors; newly registered users receive a default non-admin role
-- Ensure the admin panel at `/admin` authenticates successfully with credentials `nuralom1` / `9040`, stores an admin session token in localStorage, and redirects to the admin dashboard with all six tabs accessible
-- Verify end-to-end user auth flow: registration succeeds, login with mobile + PIN works, device fingerprint is stored on first login, and subsequent logins from the same device succeed
+- Create `manifest.json` in `frontend/public` with app name "BDT NURPAY WALLET", short_name "NURPAY", theme_color `#1E3A8A`, background_color `#ffffff`, display `standalone`, portrait orientation, and 192x192 / 512x512 icon entries
+- Register a service worker (`sw.js`) in `frontend/public` that caches the app shell for offline capability without breaking existing routing
+- Add `<link rel="manifest">`, `mobile-web-app-capable`, `apple-mobile-web-app-capable`, `theme-color`, and viewport meta tags to `frontend/index.html`
+- Add PWA icon assets: `nurpay-icon-192.png` and `nurpay-icon-512.png` in `frontend/public/assets/generated/`
+- Add an "Install App" banner on the Home page that appears when the `beforeinstallprompt` event fires, styled in primary blue (`#1E3A8A`), with a dismiss option and an "Install" button that triggers the native install prompt
+- Ensure the Admin Panel (`/admin`) and all its tabs and actions (login, dashboard tabs, data export, etc.) work correctly inside the installed PWA on Android
 
-**User-visible outcome:** Regular users can register and log in without errors, and the admin can log into the admin panel and access all dashboard sections.
+**User-visible outcome:** Users on Android 10–16 can install BDT NURPAY WALLET to their home screen via a Chrome install prompt or the in-app install banner. The app opens in standalone mode with no browser chrome, displays the NURPAY icon, and all features including the admin panel remain fully functional.

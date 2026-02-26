@@ -1,10 +1,9 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 5,
-  "summary": "Mobile banking app (similar to bKash/Nagad) with Bangladeshi mobile number + 4-digit PIN login, device binding/identification, biometric option, home page with balance (BDT) and service icons, Send Money/Recharge/Add Money/Pay Bill/Cash Out (bKash/Nagad/Rocket/Upay)/Bank Transfer/Savings with processing status and transaction slips, KYC system (NID/name/address/photo - mandatory before transactions), in-app notification system with marquee banner, transaction history, cancel with instant balance refund, My Info (PIN change, biometric, privacy, help with +8809606945622/FAQ/support tickets, logout), and Admin Panel (nuralom1/9040) with user management, balance setting, KYC approval, transaction system enable/disable, device management, notification/announcement sending, and support ticket replies. Design: green (#22C55E), white background, mobile-friendly, bottom navigation bar.",
+  "projectStateVersion": 11,
+  "summary": "Mobile banking app rebranded as 'BDT NURPAY WALLET' (NURPAY © 2026 footer). Color theme changed from green (#22C55E) to blue (#1E3A8A) + gold (#F59E0B). Logo updated to blue shield + gold 'N'. Settings page redesigned with tab-based layout: Profile (photo upload, data change) first, then Notifications, Language, Dark Mode, Change PIN, Privacy & Security (2FA, Hide Balance, Biometric Login, Login History), Help & Support (Live Chat, +8809606945622, bdt.nurpay@hotmail.com, FAQs). Admin panel now includes CSV/JSON data export/backup for all users, transactions, and tickets. All other features remain as before.",
   "architectural_notes": [
     "Admin credentials: username=nuralom1, password=9040",
-    "Primary color: #22C55E (green), white background, mobile-friendly UI, bottom navigation bar",
     "Device fingerprinting/binding: each customer account linked to their device; admin can reset device from panel",
     "Transaction lock: all transactions blocked unless admin enables the transaction system from admin panel",
     "KYC gate: all financial transactions require approved KYC (NID, name, address, photo)",
@@ -12,12 +11,14 @@
     "In-app notifications only (no push notifications); admin sends announcements visible as marquee on home and in notifications page",
     "Support system: ticket-based (no real-time AI/live chat); help page shows +8809606945622, FAQ, and ticket submission",
     "Biometric authentication via device WebAuthn/Biometric API, toggleable in Settings",
-    "Transaction cancel immediately refunds balance to customer account"
+    "Transaction cancel immediately refunds balance to customer account",
+    "Color theme updated to Blue (#1E3A8A) + Gold (#F59E0B); green theme replaced"
   ],
   "known_issues": [
     "Registration bug: 'Unauthorized: Only admins can assign user roles' error on registerUser — admin role check incorrectly applied to regular user registration; needs to be removed from registerUser function"
   ],
-  "isFixRequest": true,
+  "isFixRequest": false,
+  "imageRequirements": "## Required Images\n- Blue shield shape with a gold stylized 'N' letter centered, clean flat design on transparent background, square format (nurpay-icon-192.dim_192x192.png)\n- Blue shield shape with a gold stylized 'N' letter centered, clean flat design on transparent background, square format, high resolution (nurpay-icon-512.dim_512x512.png)",
   "existing_features": [
     {
       "id": "feature-build-a-login-registration-screen-login-form-bangladeshi-mobile-number-field-01xxxxxxxxx-format-11-digits-and-4-digit-pin-input-registration-form-mobile-number-full-name-4-digit-pin-confirm-pin-on-first-login-from-a-new-device-store-the-browser-fingerprint-using-navigator-useragent-screen-dimensions-timezone-as-a-composite-device-id-stored-in-localstorage-and-send-it-to-the-backend-if-backend-returns-device-mismatch-error-show-this-account-is-registered-on-another-device-please-contact-support-with-the-support-number-8809606945622-include-a-biometric-login-button-web-authentication-api-webauthn-that-appears-if-biometric-was-previously-enabled-in-settings",
@@ -112,6 +113,54 @@
       "title": "After fixing the registerUser bug, verify that the full user authentication flow works end-to-end: (1) A new user can register with mobile number, full name, and PIN; (2) The same user can then log in with their mobile number and PIN; (3) Device fingerprint is stored on first login; (4) Subsequent logins from the same device succeed without device mismatch errors.",
       "reqIds": [
         "REQ-17"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-remove-the-built-with-using-caffeine-ai-2026-footer-text-visible-in-the-screenshot-from-every-page-in-the-app-no-footer-text-of-any-kind-should-appear-not-even-nurpay-2026-ensure-no-component-page-or-layout-wrapper-renders-this-footer-string-anywhere-in-the-frontend",
+      "title": "Remove the 'Built with ❤️ using caffeine.ai © 2026' footer text visible in the screenshot from every page in the app. No footer text of any kind should appear — not even 'NURPAY © 2026'. Ensure no component, page, or layout wrapper renders this footer string anywhere in the frontend.",
+      "reqIds": [
+        "REQ-24"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-progressive-web-app-pwa-support-so-the-app-can-be-installed-on-android-devices-running-android-10-through-android-16-create-a-valid-web-app-manifest-manifest-json-in-the-frontend-public-directory-with-the-app-name-bdt-nurpay-wallet-short-name-nurpay-theme-color-1e3a8a-background-color-ffffff-display-standalone-orientation-portrait-and-icon-entries-for-192x192-and-512x512-png-sizes-register-a-service-worker-sw-js-in-frontend-public-that-caches-the-app-shell-for-offline-capability-reference-the-manifest-in-frontend-index-html-with-a-link-rel-manifest-tag-and-add-the-mobile-web-app-capable-and-apple-mobile-web-app-capable-meta-tags",
+      "title": "Add Progressive Web App (PWA) support so the app can be installed on Android devices running Android 10 through Android 16. Create a valid web app manifest (manifest.json) in the frontend/public directory with the app name 'BDT NURPAY WALLET', short_name 'NURPAY', theme_color '#1E3A8A', background_color '#ffffff', display 'standalone', orientation 'portrait', and icon entries for 192x192 and 512x512 PNG sizes. Register a service worker (sw.js) in frontend/public that caches the app shell for offline capability. Reference the manifest in frontend/index.html with a <link rel='manifest'> tag and add the mobile-web-app-capable and apple-mobile-web-app-capable meta tags.",
+      "reqIds": [
+        "REQ-25"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-generate-pwa-icon-assets-for-the-manifest-a-192x192-png-and-a-512x512-png-version-of-the-nurpay-blue-shield-gold-n-logo-and-place-them-as-frontend-public-assets-generated-nurpay-icon-192-png-and-frontend-public-assets-generated-nurpay-icon-512-png-reference-these-filenames-in-the-manifest-json-icons-array",
+      "title": "Generate PWA icon assets for the manifest: a 192x192 PNG and a 512x512 PNG version of the NURPAY blue shield + gold 'N' logo, and place them as frontend/public/assets/generated/nurpay-icon-192.png and frontend/public/assets/generated/nurpay-icon-512.png. Reference these filenames in the manifest.json icons array.",
+      "reqIds": [
+        "REQ-26"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-an-in-app-install-app-banner-button-on-the-home-page-that-appears-when-the-pwa-install-prompt-beforeinstallprompt-event-is-available-the-banner-should-display-install-nurpay-on-your-device-with-a-download-icon-and-an-install-button-styled-in-the-primary-blue-1e3a8a-theme-dismissing-the-banner-hides-it-for-the-session-on-android-tapping-install-triggers-the-native-install-prompt",
+      "title": "Add an in-app 'Install App' banner/button on the Home page that appears when the PWA install prompt (beforeinstallprompt event) is available. The banner should display 'Install NURPAY on your device' with a download icon and an 'Install' button styled in the primary blue (#1E3A8A) theme. Dismissing the banner hides it for the session. On Android, tapping 'Install' triggers the native install prompt.",
+      "reqIds": [
+        "REQ-27"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-ensure-the-admin-panel-admin-is-fully-accessible-and-functional-when-the-app-is-opened-as-an-installed-pwa-on-android-the-admin-login-nuralom1-9040-all-six-dashboard-tabs-dashboard-transaction-control-user-management-transaction-management-notifications-support-tickets-backup-export-and-all-admin-actions-set-balance-approve-reject-kyc-reset-device-complete-cancel-transactions-send-announcements-reply-to-tickets-export-csv-json-must-work-correctly-within-the-standalone-pwa-context-on-android-10-16",
+      "title": "Ensure the Admin Panel (/admin) is fully accessible and functional when the app is opened as an installed PWA on Android. The admin login (nuralom1/9040), all six dashboard tabs (Dashboard, Transaction Control, User Management, Transaction Management, Notifications, Support Tickets, Backup & Export), and all admin actions (set balance, approve/reject KYC, reset device, complete/cancel transactions, send announcements, reply to tickets, export CSV/JSON) must work correctly within the standalone PWA context on Android 10–16.",
+      "reqIds": [
+        "REQ-28"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-viewport-meta-tag-in-frontend-index-html-ensuring-the-app-renders-correctly-on-all-android-screen-sizes-from-android-10-to-android-16-use-content-width-device-width-initial-scale-1-0-maximum-scale-1-0-user-scalable-no-also-add-a-theme-color-meta-tag-set-to-1e3a8a-to-style-the-android-status-bar-when-the-app-runs-in-standalone-mode",
+      "title": "Add a viewport meta tag in frontend/index.html ensuring the app renders correctly on all Android screen sizes from Android 10 to Android 16: use content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'. Also add a theme-color meta tag set to #1E3A8A to style the Android status bar when the app runs in standalone mode.",
+      "reqIds": [
+        "REQ-29"
       ],
       "version": 1
     }
@@ -245,6 +294,90 @@
       "reqIds": [
         "REQ-15"
       ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-21",
+      "summary": "Rebrand app: rename to 'BDT NURPAY WALLET', update footer to 'NURPAY © 2026', remove 'caffeine.ai' branding, update logo to blue shield + gold 'N' SVG",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-22",
+      "summary": "Change color theme from green (#22C55E) to blue (#1E3A8A) + gold (#F59E0B) throughout the app",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-23",
+      "summary": "Redesign Settings page with tab-based layout: Profile (photo upload + data edit) first, Notifications toggle, Language (Bangla/English), Dark Mode, Change PIN, Privacy & Security (2FA, Hide Balance, Biometric Login, Login History), Help & Support (Live Chat, Call +8809606945622, Email bdt.nurpay@hotmail.com, FAQs)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-24",
+      "summary": "Add CSV/JSON data export/backup feature in Admin Panel for all users, transactions, and support tickets",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-25",
+      "summary": "Remove all 'Built with ❤️ using caffeine.ai © 2026' footer text from every page and replace it with 'NURPAY © 2026'.",
+      "reqIds": [
+        "REQ-18"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-26",
+      "summary": "Rename the app brand throughout the frontend to 'BDT NURPAY WALLET'. The app title in index.html, the header component, the login page header, and all other visible brand references must show 'BDT NURPAY WALLET'. Do not include the subtitle 'Your Smart Financial Hub' anywhere.",
+      "reqIds": [
+        "REQ-19"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-27",
+      "summary": "Update the entire app color theme from green (#22C55E) to blue (#1E3A8A) as primary and gold (#F59E0B) as accent. Apply this to all buttons, headers, cards, gradient accents, active navigation indicators, balance card background, and service icon backgrounds throughout the app. Update tailwind.config.js, index.css CSS custom properties, and all inline color references accordingly.",
+      "reqIds": [
+        "REQ-20"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-28",
+      "summary": "Replace the current app logo in AppHeader.tsx and LoginPage.tsx with a new blue shield + gold 'N' SVG logo matching the NURPAY brand shown in the uploaded poster image. Use the generated logo asset file nurpay-logo.dim_80x80.png. The logo should appear in the top app bar and on the login/registration screen.",
+      "reqIds": [
+        "REQ-21"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-29",
+      "summary": "Completely redesign the Profile/Settings page (ProfilePage.tsx) with a tab-based layout. The tabs and their contents must be ordered as follows: (1) Profile — photo upload (using PhotoUpload component), editable display name, mobile number display; (2) Notifications — push notification toggle; (3) Language — selector for Bangla / English; (4) Dark Mode — toggle switch; (5) Change PIN — old PIN + new PIN + confirm new PIN fields; (6) Privacy & Security — Two-Factor Authentication toggle, Hide Balance toggle, Biometric Login toggle (WebAuthn enable/disable), Login History list; (7) Help & Support — Live Chat button, tappable call link to +8809606945622, email link to bdt.nurpay@hotmail.com, FAQ accordion, Support Ticket form (subject + message) with ticket history showing admin replies. Place a Logout button below the tabs. The tab-based UI should use a horizontal scrollable tab bar at the top of the settings page.",
+      "reqIds": [
+        "REQ-22"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-30",
+      "summary": "Add a CSV and JSON data export/backup feature to the Admin Panel dashboard. In the Admin Panel (AdminDashboardPage.tsx), add a new 'Backup & Export' tab or section. It must contain three export buttons: (1) Export All Users as CSV, (2) Export All Transactions as CSV, (3) Export All Support Tickets as CSV. Each button should also have a paired JSON export option. Clicking any export button downloads the respective dataset as a file directly in the browser using client-side blob generation from data fetched via the existing backend query functions (getAllTransactions, getAllTickets, and the user list from admin user management).",
+      "reqIds": [
+        "REQ-23"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-31",
+      "summary": "On the Profile tab of the Settings page, remove the display name field and keep only the photo upload/check functionality",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-32",
+      "summary": "Android APK packaging: make the app installable/downloadable on Android versions 10–16, with full admin control panel accessible on Android",
+      "reqIds": [],
       "status": "pending"
     }
   ],

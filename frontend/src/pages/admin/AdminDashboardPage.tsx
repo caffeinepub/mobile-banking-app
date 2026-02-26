@@ -23,6 +23,7 @@ import {
   UserCheck,
   UserX,
   Smartphone,
+  Download,
 } from 'lucide-react';
 import { isAdminAuthenticated, clearAdminToken } from '../../utils/adminAuth';
 import {
@@ -136,6 +137,48 @@ function DashboardStats() {
     { label: 'Open Tickets', value: openTickets, icon: <HeadphonesIcon size={20} />, color: 'text-red-600' },
   ];
 
+  const handleExportCSV = () => {
+    if (!transactions || transactions.length === 0) return;
+    const headers = ['ID', 'User ID', 'Type', 'Amount', 'Recipient', 'Provider', 'Status', 'Created At'];
+    const rows = transactions.map((tx) => [
+      tx.id,
+      tx.userId,
+      tx.txType,
+      tx.amount.toFixed(2),
+      tx.recipient || '',
+      tx.provider || '',
+      tx.status,
+      new Date(Number(tx.createdAt) / 1_000_000).toISOString(),
+    ]);
+    const csvContent = [headers, ...rows].map((r) => r.map((v) => `"${v}"`).join(',')).join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `nurpay-transactions-${Date.now()}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const handleExportJSON = () => {
+    if (!transactions || transactions.length === 0) return;
+    const data = transactions.map((tx) => ({
+      ...tx,
+      createdAt: new Date(Number(tx.createdAt) / 1_000_000).toISOString(),
+    }));
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `nurpay-transactions-${Date.now()}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="space-y-4">
       <h2 className="text-lg font-bold text-foreground">Dashboard Overview</h2>
@@ -167,6 +210,31 @@ function DashboardStats() {
           <p>Username: <span className="text-foreground font-medium">nuralom1</span></p>
           <p>Role: <span className="text-primary font-medium">Super Admin</span></p>
           <p>Support: <span className="text-foreground">+8809606945622</span></p>
+        </div>
+      </div>
+
+      {/* Export Section */}
+      <div className="bg-card border border-border rounded-xl p-4">
+        <h3 className="font-semibold text-foreground mb-3 flex items-center gap-2">
+          <Download size={16} /> Export Data
+        </h3>
+        <div className="grid grid-cols-2 gap-2">
+          <button
+            onClick={handleExportCSV}
+            disabled={!transactions || transactions.length === 0}
+            className="py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium disabled:opacity-60 flex items-center justify-center gap-1.5"
+          >
+            <Download size={14} />
+            Export CSV
+          </button>
+          <button
+            onClick={handleExportJSON}
+            disabled={!transactions || transactions.length === 0}
+            className="py-2 bg-secondary text-secondary-foreground rounded-lg text-sm font-medium disabled:opacity-60 flex items-center justify-center gap-1.5"
+          >
+            <Download size={14} />
+            Export JSON
+          </button>
         </div>
       </div>
     </div>
@@ -453,17 +521,17 @@ function TransactionManagement() {
                       <button
                         onClick={() => handleComplete(tx.id)}
                         disabled={completeMutation.isPending}
-                        className="py-2 bg-green-600 text-white rounded-lg text-sm font-medium disabled:opacity-60 flex items-center justify-center gap-1"
+                        className="py-2 bg-green-600 text-white rounded-lg text-xs font-medium disabled:opacity-60 flex items-center justify-center gap-1"
                       >
-                        {completeMutation.isPending ? <Loader2 size={14} className="animate-spin" /> : <CheckCircle size={14} />}
+                        {completeMutation.isPending ? <Loader2 size={12} className="animate-spin" /> : <CheckCircle size={12} />}
                         Complete
                       </button>
                       <button
                         onClick={() => handleCancel(tx.id)}
                         disabled={cancelMutation.isPending}
-                        className="py-2 bg-red-600 text-white rounded-lg text-sm font-medium disabled:opacity-60 flex items-center justify-center gap-1"
+                        className="py-2 bg-red-600 text-white rounded-lg text-xs font-medium disabled:opacity-60 flex items-center justify-center gap-1"
                       >
-                        {cancelMutation.isPending ? <Loader2 size={14} className="animate-spin" /> : <XCircle size={14} />}
+                        {cancelMutation.isPending ? <Loader2 size={12} className="animate-spin" /> : <XCircle size={12} />}
                         Cancel
                       </button>
                     </div>
@@ -487,13 +555,13 @@ function NotificationsPanel() {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
 
-  const handleSend = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleCreate = async () => {
+    if (!title.trim() || !body.trim()) return;
     setMessage('');
     setError('');
     try {
       await createMutation.mutateAsync({ title, body });
-      setMessage('Announcement sent successfully!');
+      setMessage('Announcement sent to all users!');
       setTitle('');
       setBody('');
     } catch (err: any) {
@@ -505,51 +573,49 @@ function NotificationsPanel() {
     <div className="space-y-4">
       <h2 className="text-lg font-bold text-foreground">Send Announcement</h2>
 
-      <div className="bg-card border border-border rounded-xl p-4">
-        <form onSubmit={handleSend} className="space-y-3">
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-1">Title</label>
-            <input
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="Announcement title"
-              className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-1">Message</label>
-            <textarea
-              value={body}
-              onChange={(e) => setBody(e.target.value)}
-              placeholder="Announcement message..."
-              rows={4}
-              className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary resize-none"
-            />
-          </div>
+      <div className="bg-card border border-border rounded-xl p-4 space-y-3">
+        <div>
+          <label className="block text-sm font-medium text-foreground mb-1">Title</label>
+          <input
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="Announcement title"
+            className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-foreground mb-1">Message</label>
+          <textarea
+            value={body}
+            onChange={(e) => setBody(e.target.value)}
+            placeholder="Announcement message..."
+            rows={4}
+            className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary resize-none"
+          />
+        </div>
 
-          {message && (
-            <div className="flex items-center gap-2 p-2 bg-green-50 rounded-lg text-green-700 text-sm">
-              <CheckCircle size={14} />
-              {message}
-            </div>
-          )}
-          {error && (
-            <div className="flex items-center gap-2 p-2 bg-destructive/10 rounded-lg text-destructive text-sm">
-              <AlertCircle size={14} />
-              {error}
-            </div>
-          )}
+        {message && (
+          <div className="flex items-center gap-2 p-2 bg-green-50 rounded-lg text-green-700 text-sm">
+            <CheckCircle size={14} />
+            {message}
+          </div>
+        )}
+        {error && (
+          <div className="flex items-center gap-2 p-2 bg-destructive/10 rounded-lg text-destructive text-sm">
+            <AlertCircle size={14} />
+            {error}
+          </div>
+        )}
 
-          <button
-            type="submit"
-            disabled={!title || !body || createMutation.isPending}
-            className="w-full py-2.5 bg-primary text-primary-foreground rounded-lg text-sm font-semibold disabled:opacity-60 flex items-center justify-center gap-2"
-          >
-            {createMutation.isPending ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
-            Send Announcement
-          </button>
-        </form>
+        <button
+          onClick={handleCreate}
+          disabled={!title.trim() || !body.trim() || createMutation.isPending}
+          className="w-full py-2.5 bg-primary text-primary-foreground rounded-lg text-sm font-medium disabled:opacity-60 flex items-center justify-center gap-2"
+        >
+          {createMutation.isPending ? <Loader2 size={14} className="animate-spin" /> : <Send size={14} />}
+          Send Announcement
+        </button>
       </div>
     </div>
   );
@@ -560,8 +626,8 @@ function NotificationsPanel() {
 function SupportTickets() {
   const { data: tickets, isLoading } = useAdminGetAllTickets();
   const replyMutation = useAdminReplyToTicket();
-  const [replyText, setReplyText] = useState<Record<string, string>>({});
   const [expandedTicket, setExpandedTicket] = useState<string | null>(null);
+  const [replyText, setReplyText] = useState<Record<string, string>>({});
   const [actionMsg, setActionMsg] = useState<{ id: string; msg: string; type: 'success' | 'error' } | null>(null);
 
   const handleReply = async (ticketId: string) => {
@@ -577,7 +643,7 @@ function SupportTickets() {
   };
 
   const statusColor = (status: string) => {
-    if (status === 'open') return 'bg-red-100 text-red-700';
+    if (status === 'open') return 'bg-yellow-100 text-yellow-700';
     if (status === 'replied') return 'bg-blue-100 text-blue-700';
     return 'bg-gray-100 text-gray-700';
   };
@@ -614,14 +680,15 @@ function SupportTickets() {
 
               {expandedTicket === ticket.id && (
                 <div className="px-4 pb-4 space-y-3 border-t border-border pt-3">
-                  <div className="bg-muted rounded-lg p-3 text-sm text-foreground">
-                    {ticket.message}
+                  <div className="bg-muted/50 rounded-lg p-3">
+                    <p className="text-xs text-muted-foreground mb-1">User Message:</p>
+                    <p className="text-sm text-foreground">{ticket.message}</p>
                   </div>
 
                   {ticket.adminReply && (
-                    <div className="bg-primary/10 rounded-lg p-3 text-sm">
-                      <p className="text-xs font-medium text-primary mb-1">Admin Reply:</p>
-                      <p className="text-foreground">{ticket.adminReply}</p>
+                    <div className="bg-primary/5 rounded-lg p-3">
+                      <p className="text-xs text-muted-foreground mb-1">Admin Reply:</p>
+                      <p className="text-sm text-foreground">{ticket.adminReply}</p>
                     </div>
                   )}
 
@@ -632,23 +699,21 @@ function SupportTickets() {
                     </div>
                   )}
 
-                  <div className="space-y-2">
-                    <textarea
-                      value={replyText[ticket.id] || ''}
-                      onChange={(e) => setReplyText((prev) => ({ ...prev, [ticket.id]: e.target.value }))}
-                      placeholder="Type your reply..."
-                      rows={3}
-                      className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary resize-none"
-                    />
-                    <button
-                      onClick={() => handleReply(ticket.id)}
-                      disabled={!replyText[ticket.id]?.trim() || replyMutation.isPending}
-                      className="w-full py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium disabled:opacity-60 flex items-center justify-center gap-2"
-                    >
-                      {replyMutation.isPending ? <Loader2 size={14} className="animate-spin" /> : <Send size={14} />}
-                      Send Reply
-                    </button>
-                  </div>
+                  <textarea
+                    value={replyText[ticket.id] || ''}
+                    onChange={(e) => setReplyText((prev) => ({ ...prev, [ticket.id]: e.target.value }))}
+                    placeholder="Type your reply..."
+                    rows={3}
+                    className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary resize-none"
+                  />
+                  <button
+                    onClick={() => handleReply(ticket.id)}
+                    disabled={!replyText[ticket.id]?.trim() || replyMutation.isPending}
+                    className="w-full py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium disabled:opacity-60 flex items-center justify-center gap-2"
+                  >
+                    {replyMutation.isPending ? <Loader2 size={14} className="animate-spin" /> : <Send size={14} />}
+                    Send Reply
+                  </button>
                 </div>
               )}
             </div>

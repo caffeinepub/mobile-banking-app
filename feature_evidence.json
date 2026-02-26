@@ -2,13 +2,12 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-ensure-the-admin-panel-login-at-admin-works-correctly-with-credentials-nuralom1-9040-the-admin-login-form-must-authenticate-successfully-with-these-credentials-store-an-admin-session-token-in-localstorage-and-redirect-to-the-admin-dashboard-all-admin-dashboard-tabs-dashboard-stats-transaction-control-user-management-transaction-management-notifications-support-tickets-must-be-accessible-after-login",
-      "featureTitle": "Ensure the Admin Panel login at `/admin` works correctly with credentials `nuralom1` / `9040`. The admin login form must authenticate successfully with these credentials, store an admin session token in localStorage, and redirect to the admin dashboard. All admin dashboard tabs (Dashboard stats, Transaction Control, User Management, Transaction Management, Notifications, Support Tickets) must be accessible after login.",
+      "featureId": "feature-add-progressive-web-app-pwa-support-so-the-app-can-be-installed-on-android-devices-running-android-10-through-android-16-create-a-valid-web-app-manifest-manifest-json-in-the-frontend-public-directory-with-the-app-name-bdt-nurpay-wallet-short-name-nurpay-theme-color-1e3a8a-background-color-ffffff-display-standalone-orientation-portrait-and-icon-entries-for-192x192-and-512x512-png-sizes-register-a-service-worker-sw-js-in-frontend-public-that-caches-the-app-shell-for-offline-capability-reference-the-manifest-in-frontend-index-html-with-a-link-rel-manifest-tag-and-add-the-mobile-web-app-capable-and-apple-mobile-web-app-capable-meta-tags",
+      "featureTitle": "Add Progressive Web App (PWA) support so the app can be installed on Android devices running Android 10 through Android 16. Create a valid web app manifest (manifest.json) in the frontend/public directory with the app name 'BDT NURPAY WALLET', short_name 'NURPAY', theme_color '#1E3A8A', background_color '#ffffff', display 'standalone', orientation 'portrait', and icon entries for 192x192 and 512x512 PNG sizes. Register a service worker (sw.js) in frontend/public that caches the app shell for offline capability. Reference the manifest in frontend/index.html with a <link rel='manifest'> tag and add the mobile-web-app-capable and apple-mobile-web-app-capable meta tags.",
       "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/pages/admin/AdminDashboardPage.tsx",
-        "frontend/src/pages/admin/AdminLoginPage.tsx",
-        "frontend/src/utils/adminAuth.ts"
+        "frontend/index.html",
+        "frontend/public/manifest.json",
+        "frontend/public/sw.js"
       ],
       "components": [
         "authorization@4.0.0",
@@ -20,19 +19,15 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-16"
+        "REQ-25"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-after-fixing-the-registeruser-bug-verify-that-the-full-user-authentication-flow-works-end-to-end-1-a-new-user-can-register-with-mobile-number-full-name-and-pin-2-the-same-user-can-then-log-in-with-their-mobile-number-and-pin-3-device-fingerprint-is-stored-on-first-login-4-subsequent-logins-from-the-same-device-succeed-without-device-mismatch-errors",
-      "featureTitle": "After fixing the registerUser bug, verify that the full user authentication flow works end-to-end: (1) A new user can register with mobile number, full name, and PIN; (2) The same user can then log in with their mobile number and PIN; (3) Device fingerprint is stored on first login; (4) Subsequent logins from the same device succeed without device mismatch errors.",
+      "featureId": "feature-generate-pwa-icon-assets-for-the-manifest-a-192x192-png-and-a-512x512-png-version-of-the-nurpay-blue-shield-gold-n-logo-and-place-them-as-frontend-public-assets-generated-nurpay-icon-192-png-and-frontend-public-assets-generated-nurpay-icon-512-png-reference-these-filenames-in-the-manifest-json-icons-array",
+      "featureTitle": "Generate PWA icon assets for the manifest: a 192x192 PNG and a 512x512 PNG version of the NURPAY blue shield + gold 'N' logo, and place them as frontend/public/assets/generated/nurpay-icon-192.png and frontend/public/assets/generated/nurpay-icon-512.png. Reference these filenames in the manifest.json icons array.",
       "files": [
-        "frontend/src/hooks/useQueries.ts",
-        "frontend/src/pages/HomePage.tsx",
-        "frontend/src/pages/LoginPage.tsx",
-        "frontend/src/store/authStore.ts",
-        "frontend/src/utils/deviceFingerprint.ts"
+        "frontend/public/manifest.json"
       ],
       "components": [
         "authorization@4.0.0",
@@ -44,7 +39,70 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-17"
+        "REQ-26"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-an-in-app-install-app-banner-button-on-the-home-page-that-appears-when-the-pwa-install-prompt-beforeinstallprompt-event-is-available-the-banner-should-display-install-nurpay-on-your-device-with-a-download-icon-and-an-install-button-styled-in-the-primary-blue-1e3a8a-theme-dismissing-the-banner-hides-it-for-the-session-on-android-tapping-install-triggers-the-native-install-prompt",
+      "featureTitle": "Add an in-app 'Install App' banner/button on the Home page that appears when the PWA install prompt (beforeinstallprompt event) is available. The banner should display 'Install NURPAY on your device' with a download icon and an 'Install' button styled in the primary blue (#1E3A8A) theme. Dismissing the banner hides it for the session. On Android, tapping 'Install' triggers the native install prompt.",
+      "files": [
+        "frontend/src/components/InstallBanner.tsx",
+        "frontend/src/hooks/usePWAInstall.ts",
+        "frontend/src/pages/HomePage.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-27"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-ensure-the-admin-panel-admin-is-fully-accessible-and-functional-when-the-app-is-opened-as-an-installed-pwa-on-android-the-admin-login-nuralom1-9040-all-six-dashboard-tabs-dashboard-transaction-control-user-management-transaction-management-notifications-support-tickets-backup-export-and-all-admin-actions-set-balance-approve-reject-kyc-reset-device-complete-cancel-transactions-send-announcements-reply-to-tickets-export-csv-json-must-work-correctly-within-the-standalone-pwa-context-on-android-10-16",
+      "featureTitle": "Ensure the Admin Panel (/admin) is fully accessible and functional when the app is opened as an installed PWA on Android. The admin login (nuralom1/9040), all six dashboard tabs (Dashboard, Transaction Control, User Management, Transaction Management, Notifications, Support Tickets, Backup & Export), and all admin actions (set balance, approve/reject KYC, reset device, complete/cancel transactions, send announcements, reply to tickets, export CSV/JSON) must work correctly within the standalone PWA context on Android 10–16.",
+      "files": [
+        "frontend/public/sw.js",
+        "frontend/src/pages/admin/AdminDashboardPage.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-28"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-a-viewport-meta-tag-in-frontend-index-html-ensuring-the-app-renders-correctly-on-all-android-screen-sizes-from-android-10-to-android-16-use-content-width-device-width-initial-scale-1-0-maximum-scale-1-0-user-scalable-no-also-add-a-theme-color-meta-tag-set-to-1e3a8a-to-style-the-android-status-bar-when-the-app-runs-in-standalone-mode",
+      "featureTitle": "Add a viewport meta tag in frontend/index.html ensuring the app renders correctly on all Android screen sizes from Android 10 to Android 16: use content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'. Also add a theme-color meta tag set to #1E3A8A to style the Android status bar when the app runs in standalone mode.",
+      "files": [
+        "frontend/index.html"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-29"
       ],
       "confidence": "high"
     }
